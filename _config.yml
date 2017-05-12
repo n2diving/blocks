@@ -18,7 +18,7 @@ baseurl: "/blocks"
 url: ''
 github_username: hunterae
 markdown: kramdown
-theme: minima
+theme: jekyll-theme-slate
 gems:
 - jekyll-feed
 exclude:
