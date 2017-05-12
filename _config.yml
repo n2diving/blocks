@@ -9,7 +9,7 @@ collections:
     title: Uploads
     output: true
 email: hunterae@gmail.com
-description: 'How do you render your blocks of code?'
+description: How do you render your blocks of code?
 baseurl: "/blocks"
 url: ''
 github_username: hunterae
