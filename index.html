@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width,maximum-scale=2">
+    <meta name="description" content="Blocks Docs : Blocks gives you total control over how your blocks of code render.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="/blocks/assets/css/style.css?v=">
+
+<!-- Begin Jekyll SEO tag v2.2.3 -->
+<title>Start | Blocks Docs</title>
+<meta property="og:title" content="Start" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Blocks gives you total control over how your blocks of code render." />
+<meta property="og:description" content="Blocks gives you total control over how your blocks of code render." />
+<link rel="canonical" href="/blocks/" />
+<meta property="og:url" content="/blocks/" />
+<meta property="og:site_name" content="Blocks Docs" />
+<script type="application/ld+json">
+{"@context":"http://schema.org","@type":"WebSite","name":"Blocks Docs","headline":"Start","description":"Blocks gives you total control over how your blocks of code render.","url":"/blocks/"}</script>
+<!-- End Jekyll SEO tag -->
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="">View on GitHub</a>
+
+          <h1 id="project_title">Blocks Docs</h1>
+          <h2 id="project_tagline">Blocks gives you total control over how your blocks of code render.</h2>
+
+          
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2 id="introduction">Introduction</h2>
+<p>The Blocks gem is many things.</p>
+
+<p>It acts as:</p>
+
+<ul>
+  <li>a container for reusable blocks of code and options</li>
+  <li>a common interface for rendering code, whether the code was defined previously in Ruby blocks, Rails partials, or proxies to other blocks of code</li>
+  <li>a series of hooks and wrappers that can be utilized to render code before, after, and around other blocks of code, as well as before each, after each, and around each item in a collection</li>
+  <li>a templating utility for easily building reusable and highly customizable UI components</li>
+  <li>a means for DRYing up oft-repeated code in your layouts and views</li>
+  <li>a simple mechanism for changing or skipping the rendering behavior for particular blocks of code</li>
+</ul>
+
+<p>Essentially, this all boils down to the following: Blocks makes it easy to define blocks of code that can be rendered either verbatim or with replacements and modifications at some later point in time.</p>
+
+<h2 id="3-rendering-strategies---1-call">3 Rendering Strategies - 1 Call</h2>
+<p>With Blocks, you can define a Block of code for later rendering using 3 different strategies. Rendering that Block of code is done with the same call for each strategy.</p>
+
+<p><img src="assets/images/BlockRendering.png" class="img-responsive" /></p>
+
+<h3 id="strategy-1---defining-with-a-ruby-block">Strategy 1 - Defining with a Ruby Block</h3>
+
+<p>A Block may be defined as a standard Ruby block (which may be a Ruby Block, Proc, or Lambda):</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  The content of my block
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<h3 id="strategy-2---defining-with-a-rails-partial">Strategy 2 - Defining with a Rails Partial</h3>
+
+<p>A Block may be defined as a Rails partial; whenever the Block gets rendered, the partial actually gets rendered.</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">partial: </span><span class="s2">"my_partial"</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<h3 id="strategy-3---defining-with-a-proxy-to-another-block">Strategy 3 - Defining with a Proxy to Another Block</h3>
+
+<p>A Block may be defined as a proxy to another block using the with keyword in the parameters.</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">with: :some_proxy_block</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<p>Proxy Blocks can also be chained together though separate definitions. The order of Block definitions is irrelevant, so long as they all occur before the Block is rendered.</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">with: :some_proxy_block</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:some_proxy_block</span><span class="p">,</span> <span class="ss">with: :some_other_proxy_block</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:some_other_proxy_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  My proxied proxied content
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<p>Likewise, the Block that another Block proxies to can be defined in any of the three ways that Blocks are defined:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">with: :some_proxy_block</span> <span class="cp">%&gt;</span>
+
+<span class="c">&lt;!-------------- AS A BLOCK -------------------&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:some_proxy_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  My proxy block definition
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="c">&lt;!----------- OR AS A PARTIAL -----------------&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:some_other_proxy_block</span><span class="p">,</span> <span class="ss">partial: </span><span class="s2">"some_partial"</span> <span class="cp">%&gt;</span>
+
+<span class="c">&lt;!------- OR AS ANOTHER PROXY -----------------&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:some_other_proxy_block</span><span class="p">,</span> <span class="ss">with: :yet_some_other_proxy_block</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<p>Also, a Proxy block can point to a method on the builder instance (by default, this is an instance of Blocks::Builder).</p>
+
+<h3 id="1-render-call">1 Render Call</h3>
+
+<p>Whether you define the Block using a Ruby block, Rails Partial, or a Proxy to another Block, the method of rendering that block of code is the same:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<h2 id="this-looks-familiar">This Looks Familiar</h2>
+<p>If you think this looks somewhat familiar, there’s good reason for that. Any similarities you may notice with <a href="http://api.rubyonrails.org/classes/ActionView/Helpers/CaptureHelper.html#method-i-content_for">Rails’s content_for with yield</a> and <a href="https://apidock.com/rails/ActionController/Base/render">rendering partials in Rails</a> are intentional (the proxying feature may even remind you of <a href="http://ruby-doc.org/stdlib-2.0.0/libdoc/forwardable/rdoc/Forwardable.html">Ruby’s Forwardable Module</a>). Part of the original reasoning for the creating this gem was to provide a common interface for rendering both Ruby blocks and Rails’ partials.</p>
+
+<p>Example of same code written with Blocks vs. Rails’ content_for with yield:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_content</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  My content to be rendered later
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_content</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">content_for</span> <span class="ss">:my_content</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  My content to be rendered later
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="ss">:my_content</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<p>Example of same code written with Blocks vs. Rails’ render partial:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_content</span><span class="p">,</span> <span class="ss">partial: </span><span class="s2">"my_partial"</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_content</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">render</span> <span class="ss">partial: </span><span class="s2">"my_partial"</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<p>If the Blocks Gem ended there, it might even prove useful to a few people out there, but as we’ll soon see, Blocks goes way beyond these enhancements.</p>
+
+<h2 id="this-looks-different">This Looks Different</h2>
+
+<h3 id="indifferent-access">Indifferent Access</h3>
+<p>Let’s jump right in with a relatively minor but important difference. The Blocks gem does not care whether the name of your Block is a String or a Symbol; it treats both as the same. So whereas using content_for with yield will require that the name matches identically, Blocks will handle the mismatch of Symbols and Strings:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_content</span><span class="p">,</span> <span class="ss">partial: </span><span class="s2">"my_partial"</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="s2">"my_content"</span> <span class="cp">%&gt;</span>
+
+=&gt; Will output the contents of my_partial
+</code></pre>
+</div>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">content_for</span> <span class="ss">:my_content</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  My content
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="s2">"my_content"</span> <span class="cp">%&gt;</span>
+
+=&gt; Won't produce output
+</code></pre>
+</div>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="s2">"my_other_content"</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  My other content
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_other_content</span> <span class="cp">%&gt;</span>
+=&gt; Will output "My other content"
+</code></pre>
+</div>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">content_for</span> <span class="s2">"my_other_content"</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  My content
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="ss">:my_other_content</span><span class="s2">" </span><span class="cp">%&gt;</span>
+
+=&gt; Won't produce output
+</code></pre>
+</div>
+
+<h3 id="3-ways-to-render-with-a-default-definition">3 WAYS TO RENDER WITH A DEFAULT DEFINITION</h3>
+<p>If a block is rendered without a definition, it doesn’t output anything, but it doesn’t fail either:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:block_without_a_definition</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<p>This, in itself, is no different than running:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="ss">:some_content_name_not_defined</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<p>Rails would handle this in exactly the same way, and in both examples, nothing was rendered, because a definition for the “block_without_a_definition” Block was never defined, just as content_for was never run to define “some_content_name_not_defined”.</p>
+
+<p>But with Blocks, we can actually specify what to render when no corresponding definition was made, and we can do this in the exact same three ways that Blocks are defined:</p>
+
+<p>We can render with a default Ruby block to use:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block_without_a_definition</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  This is my default definition for this Block
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<p>We can render with a default partial to use:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block_without_a_definition</span><span class="p">,</span> <span class="ss">partial: </span><span class="s2">"partial_to_render"</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<p>We can render with a default proxy to another Block to use:</p>
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block_without_a_definition</span><span class="p">,</span> <span class="ss">with: :another_block</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<h3 id="passing-parameters">PASSING PARAMETERS</h3>
+<p>Moving on to another key difference, Blocks may be defined with params, and params may be passed to Blocks when they are rendered:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="o">|</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="p">,</span> <span class="n">options</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  Hello <span class="cp">&lt;%=</span> <span class="n">param1</span> <span class="cp">%&gt;</span>. My second param is <span class="cp">&lt;%=</span> <span class="n">param2</span> <span class="cp">%&gt;</span> and my options are <span class="cp">&lt;%=</span> <span class="n">options</span><span class="p">.</span><span class="nf">inspect</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="s2">"World"</span><span class="p">,</span> <span class="s2">"param2"</span><span class="p">,</span> <span class="ss">a: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">b: </span><span class="mi">2</span><span class="p">,</span> <span class="ss">c: </span><span class="mi">3</span> <span class="cp">%&gt;</span>
+
+=&gt; Outputs Hello World. My second param is param2 and my options are {"a"=&gt;1, "b"=&gt;2, "c"=&gt;3}
+</code></pre>
+</div>
+
+<p>The number of parameters do not need to match up between the define and render call, so the defined block may take no arguments or more arguments than the render call passes.</p>
+
+<p>There is a second way of passing parameters to a Block - on the define call itself:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">a: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">b: </span><span class="mi">2</span><span class="p">,</span> <span class="ss">c: </span><span class="mi">3</span> <span class="k">do</span> <span class="o">|</span><span class="n">options</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  My options are <span class="cp">&lt;%=</span> <span class="n">options</span><span class="p">.</span><span class="nf">inspect</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block</span> <span class="cp">%&gt;</span>
+
+=&gt; My options are {"a"=&gt;1, "b"=&gt;2, "c"=&gt;3}
+</code></pre>
+</div>
+
+<p>Any parameters that have matching names between the define and the render calls will give precedence to the render parameters:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">a: </span><span class="mi">1</span><span class="p">,</span> <span class="ss">b: </span><span class="mi">2</span><span class="p">,</span> <span class="ss">c: </span><span class="mi">3</span> <span class="k">do</span> <span class="o">|</span><span class="n">options</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  My options are <span class="cp">&lt;%=</span> <span class="n">options</span><span class="p">.</span><span class="nf">inspect</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">a: </span><span class="mi">4</span><span class="p">,</span> <span class="ss">c: </span><span class="mi">6</span> <span class="cp">%&gt;</span>
+
+=&gt; My options are {"a"=&gt;4, "c"=&gt;6, "b"=&gt;2}
+</code></pre>
+</div>
+
+<h3 id="rendering-a-collection">RENDERING A COLLECTION</h3>
+<p>Rendering a partial in Rails allows the developer to specify a collection, which will render the partial for each item in the collection. Likewise, Blocks has near-identical syntax for rendering a collection:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  Item: <span class="cp">&lt;%=</span> <span class="n">item</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">collection: </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="cp">%&gt;</span>
+
+=&gt; Item: 1 Item: 2 Item: 3 Item: 4
+</code></pre>
+</div>
+
+<p>The collection may also be set when the Block is defined:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">collection: </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  Item: <span class="cp">&lt;%=</span> <span class="n">item</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block</span> <span class="cp">%&gt;</span>
+
+=&gt; Item: 1 Item: 2 Item: 3 Item: 4
+</code></pre>
+</div>
+
+<p>Additionally, you can set the “as” option which will affect the variable name of the item in the collection within the rendered partial:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">define</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">collection: </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="ss">as: :item</span><span class="p">,</span> <span class="ss">partial: </span><span class="s2">"my_partial"</span>
+
+<span class="o">&lt;</span><span class="sx">%= blocks.render :my_block </span><span class="cp">%&gt;</span>
+
+=&gt; Will render each _my_partial for each item in the collection. _my_partial will have item set to the item of the collection.
+</code></pre>
+</div>
+
+<h3 id="hook-it-wrap-it">HOOK IT, WRAP IT</h3>
+<p>In Rails, when you make multiple content_for calls with the same block name, and then yield to that block name, it outputs the concatenated content of the content_for blocks in the order in which they were defined:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">content_for</span> <span class="ss">:hello</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Hello 1,
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">content_for</span> <span class="ss">:hello</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Hello 2,
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">content_for</span> <span class="ss">:hello</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Hello 3
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="k">yield</span> <span class="ss">:hello</span> <span class="cp">%&gt;</span>
+
+<span class="c">&lt;!-- Outputs Hello 1, Hello 2, Hello 3 --&gt;</span>
+</code></pre>
+</div>
+
+<p>Blocks takes this concept one step further by giving the programmer an enormous degree of freedom in determining where and how content is rendered. It does so by providing a series of hooks and wrappers that render additional code in relation to the Block being rendered.</p>
+
+<p>This gives the programmer the ability to define content that is prepended, appended, surrounding, before, after, around, before_all, and after_all the results of rendering the actual Block. When a collection is involved, there is also before_each, after_each, and around_each. This functionality is achieved through the use of Hooks.</p>
+
+<p>Here’s the above code translated into Blocks syntax:</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">append</span> <span class="ss">:hello</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Hello 1,
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">append</span> <span class="ss">:hello</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Hello 2,
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">append</span> <span class="ss">:hello</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Hello 3
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:hello</span> <span class="cp">%&gt;</span>
+
+<span class="c">&lt;!-- Outputs Hello 1, Hello 2, Hello 3 --&gt;</span>
+</code></pre>
+</div>
+
+<p>While Rails will render multiple content_for calls with the same name in order, Blocks gives the programmer the ability to define relative content to be prepended, appended, surrounding, before, after, around, before_all, after_all while rendering the content block. When a collection is involved, there is also before_each, after_each, and around_each. This functionality is achieved through the use of Hooks.</p>
+
+<p>There are three different types of hooks, and three levels for each of the types of hooks (making a total of nine different hooks). The three types are: before, after, and around hooks. They may exist at three different levels: in relation to all rendered content, in relation to a single item in a collection being rendered, and in relation to the actual content of the Block being rendered. The levels will become more clear as we proceed.</p>
+
+<p>Hooks work similar to the way that Rails does ActionController filters; before hooks render code before the Block, after hooks render code after the Block, and around hooks render code around the Block. The level of the hook determines exactly where the code gets rendered in relation to the Block.</p>
+
+<p>Multiple hooks may be defined of the same type. If they are append, after, or after_all hooks, the order in which they are rendered is the same as the order in which they are defined.</p>
+
+<p>All other hooks will render in reverse order. The idea behind this is that if I define a before hook, and then define another before hook, the second before hook actually renders before the first before hook. It’s like saying, “before some code, render this, and before that, render this”. Likewise, defining an around hook will render around something, a second around hook will render around the first around hook, etc.</p>
+
+<p>Like defining a Block, hooks can be defined as Ruby blocks, Rails partials, or Proxies. Multiple different hooks may be defined for the same Block.</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">prepend</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Prepended content
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">before</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">partial: </span><span class="s2">"some_partial"</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">after</span> <span class="ss">:my_block</span><span class="p">,</span> <span class="ss">with: :some_proxy_block</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<p>BEFORE HOOKS</p>
+
+<p>The complete list of Hooks and Wrappers is as follows:</p>
+
+<p>Hook Name	Where content Renders	Render order	Allows multiples?
+before_all	Renders before all other content, hooks, and wrappers	Reverse order	Yes
+around_all	Renders code around all other hooks and wrappers with the exception of the before_all and after_all hooks	Reverse order	Yes
+wrap_all	Renders code around all other content with the exception of before_all, after_all, and around_all hooks	N/A	No
+wrap_each	Renders around each item in a collection (the absence of a collection will treat the rendering as a collection with a single item)	N/A	No
+around	Renders code around the combination of the before hooks, the wrapper, the surround hooks, the prepend hooks, the Block content, the append hooks, and the after hooks	Reverse order	Yes
+before	Renders code immediately before the combination of the wrapper content, the surround hooks, the prepend hooks, the Block content, and the append hooks	Reverse order	Yes
+wrapper	Renders code around the combination of the surround hooks, the prepend hooks, the Block content, and the append hooks	N/A	No
+surround	Renders code around the combination of the prepend hooks, the Block content, and the append Hooks.	Reverse order	Yes
+prepend	Renders code immediately prior to the Block content itself	Reverse order	Yes
+append	Renders code immediately after the Block content itself	In order	Yes
+after	Renders code immediately after the combination of the wrapper content, the surround hooks, the prepend hooks, the Block content, and the append hooks	In order	Yes
+after_all	Renders code after all other content, hooks, and wrappers	In order	Yes
+Graphically, this will look something like this (without a collection):</p>
+
+<p>blockrendering-blockrenderingor with a collection:</p>
+
+<p>blockrendering-collectionrendering</p>
+
+<p>EXAMPLES</p>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">append</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Append 1;
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">append</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Append 2;
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">append</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Append 3
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Content
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="c">&lt;!-- Outputs Content Append 1; Append 2; Append 3 --&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">prepend</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Prepend 1;
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">prepend</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Prepend 2;
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">prepend</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Prepend 3;
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Content
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+<span class="c">&lt;!-- Outputs Prepend 3; Prepend 2; Prepend 1; Content --&gt;</span>
+</code></pre>
+</div>
+
+<div class="language-erb highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">around</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="o">|</span><span class="n">content_block</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  First around call<span class="nt">&lt;br&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">content_block</span><span class="p">.</span><span class="nf">call</span> <span class="cp">%&gt;</span>
+  End of first around call<span class="nt">&lt;br&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">around</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="o">|</span><span class="n">content_block</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  Second around call<span class="nt">&lt;br&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">content_block</span><span class="p">.</span><span class="nf">call</span> <span class="cp">%&gt;</span>
+  End of second around call<span class="nt">&lt;br&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">around</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="o">|</span><span class="n">content_block</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  Third around call<span class="nt">&lt;br&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="n">content_block</span><span class="p">.</span><span class="nf">call</span> <span class="cp">%&gt;</span>
+  End of third around call<span class="nt">&lt;br&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="cp">&lt;%=</span> <span class="n">blocks</span><span class="p">.</span><span class="nf">render</span> <span class="ss">:my_block</span> <span class="k">do</span> <span class="cp">%&gt;</span>
+  Content<span class="nt">&lt;br&gt;</span>
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+
+<span class="c">&lt;!-- Outputs:
+Third around call
+Second around call
+First around call
+Content
+End of first around call
+End of second around call
+End of third around call
+--&gt;</span>
+</code></pre>
+</div>
+
+<p>WRAPPERS</p>
+
+<p>Wrappers work almost identically to around hooks with the exception that there may be multiple hooks of the same type but only a single wrapper of a particular type. There are three types of wrappers, one for each of the levels mentioned above.</p>
+
+<p>Wrappers are like Hooks but they are singular; i.e. only a single wrapper of a given type may exist for a Block. There are three different wrapper types: wrap_all, wrap_each, and wrapper.</p>
+
+<h3 id="skip-it">SKIP IT</h3>
+<p>TODO</p>
+
+<h3 id="merging-options">MERGING OPTIONS</h3>
+<p>TODO</p>
+
+<h3 id="3-levels-of-options">3 LEVELS OF OPTIONS</h3>
+<p>TODO</p>
+
+<h3 id="templating">TEMPLATING</h3>
+<p>TODO</p>
+
+
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+      <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-104699666-1', 'auto');
+        ga('send', 'pageview');
+      </script>
+    
+  </body>
+</html>
